@@ -13,62 +13,98 @@
   <style>
     /* Add styles here */
     .leaflet-control-attribution {
-    display: none;
-}
+      display: none;
+    }
+    body {
+        padding: 0;
+        margin: 0;
+    }
+    .map-wrap { height: 100vh; position: relative; }
+    #map { height: 100vh; }
+    #sidebar {
+        height: 100vh;
+        width: 50px;
+        background: #fff;
+        position: absolute;
+        z-index: 1999;
+        display: flex;
+        justify-content: start;
+        flex-direction: column;
+        padding: 10px 20px;
+    }
+    #topbar {
+        /* background: #aeaeae; */
+        height: 40px;
+        width: calc(100% - 110px);
+        position: absolute;
+        top: 0;
+        left: 60px;
+        z-index: 9999;
+        display: flex;
+        justify-content: start;
+        padding: 8px;
+        align-items: center;
+    }
 
-body {
-    padding: 0;
-    margin: 0;
-}
-.map-wrap { height: 100vh; position: relative; }
-#map { height: 100vh; }
-#sidebar {
-    height: 100vh;
-    width: 50px;
-    background: #fff;
-    position: absolute;
-    z-index: 1999;
-    display: flex;
-    justify-content: start;
-    flex-direction: column;
-    padding: 10px 20px;
-}
-#topbar {
-    /* background: #aeaeae; */
-    height: 40px;
-    width: calc(100% - 120px);
-    position: absolute;
-    top: 0;
-    left: 100px;
-    z-index: 9999;
-    display: flex;
-    justify-content: start;
-    padding: 8px;
-    align-items: center;
-}
-
-#topbar .input-group input {
-    border-radius: 0 20px 20px 0;
-    border-color: transparent;
-    padding : 2px 10px;
-}
-#topbar .input-group small {
-  border-radius: 20px 0 0 20px;
-}
+    #topbar .input-group input {
+        border-radius: 20px 0 0 20px;
+        border-color: transparent;
+        padding : 2px 15px;
+        font-size: 12px;
+    }
+    #topbar .input-group input::placeholder {
+      font-size: 12px; /* Ukuran font placeholder lebih kecil */
+      opacity: 1; /* Membuat placeholder terlihat jelas */
+      padding: 15px; /* Jarak padding di kiri placeholder */
+    }
+    #topbar .input-group small {
+      border-radius: 0 20px 20px 0;
+    }
+    .badge-wrap {
+      display: flex;
+      max-width: 50vw;
+      overflow-x: auto;
+      cursor: grab;
+    }
+    /* Hide scrollbar for Chrome, Safari, and Opera */
+    .badge-wrap::-webkit-scrollbar {
+        height: 0; /* Set height to 0 to hide the scrollbar thumb */
+    }
   </style>
 </head>
 <body>
   <div class="map-wrap">
     <div id="topbar">
-      <div class="input-group input-group-sm w-25">
-        <small class="input-group-text"><i class="fa fa-search"></i></small>
-        <input type="text" class="form-control form-control-sm" placeholder="Search gulu gulu maps">
-      </div>
-      <div class="ms-2">
-        <small class="badge text-bg-light"><i class="fa fa-utensils"></i> Restaurant</small>
-      </div>
-      <div class="ms-2">
-        <small class="badge text-bg-light"><i class="fa fa-dumbbell"></i> Sport Center</small>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="search-wrap">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search gulu gulu maps">
+            <small class="input-group-text"><i class="fa fa-search"></i></small>
+          </div>
+        </div>
+        <div class="badge-wrap">
+          <div class="ms-2">
+            <small class="badge text-bg-light"><i class="fa fa-utensils"></i> Restaurant</small>
+          </div>
+          <div class="ms-2">
+            <small class="badge text-bg-light"><i class="fa fa-bed"></i> Hotel</small>
+          </div>
+          <div class="ms-2">
+            <small class="badge text-bg-light"><i class="fa fa-camera"></i> Things to do</small>
+          </div>
+          <div class="ms-2">
+            <small class="badge text-bg-light"><i class="fa fa-university"></i> Museums</small>
+          </div>
+          <div class="ms-2">
+            <small class="badge text-bg-light"><i class="fa fa-train"></i> Transit</small>
+          </div>
+          <div class="ms-2">
+            <small class="badge text-bg-light"><i class="fa fa-hospital"></i> Pharmacies</small>
+          </div>
+          <div class="ms-2">
+            <small class="badge text-bg-light"><i class="fa fa-bed"></i> ATMs</small>
+          </div>
+        </div>
       </div>
     </div>
     <div id="sidebar">
@@ -98,6 +134,19 @@ body {
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
   crossorigin=""></script>
-  <script defer type="text/javascript" src="/main.js"></script>
+  <!-- <script defer type="text/javascript" src="/main.js"></script> -->
+  <script>
+  var map = L.map('map', {
+    zoomControl: true
+  }).setView([-6.1761924, 106.6382161],20);
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+
+  L.control.zoom({
+    position: 'bottomright'
+  }).addTo(map);
+  </script>
 </body>
 </html>
