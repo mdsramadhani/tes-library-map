@@ -78,6 +78,29 @@
       width: 100%;
       z-index: 9999;
     }
+    /* Gaya kustom untuk mini map */
+    .leaflet-control-minimap {
+      border: 2px solid #3388ff;
+      border-radius: 4px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .leaflet-control-minimap .leaflet-container {
+        background: #f9f9f9;
+    }
+
+    .leaflet-control-minimap .leaflet-control {
+        margin: 10px;
+    }
+    .custom-minimap-position {
+        bottom: 5px !important; /* Adjust bottom margin */
+        left: 60px !important;   /* Adjust left margin */
+    }
+    /* Custom size for mini map */
+    .custom-minimap-size {
+        width: 100px !important;  /* Adjust width */
+        height: 100px !important; /* Adjust height */
+    }
   </style>
 </head>
 <body>
@@ -154,11 +177,30 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
   crossorigin=""></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.min.js"></script>
   <!-- <script defer type="text/javascript" src="/main.js"></script> -->
   <script>
   var map = L.map('map', {
     zoomControl: true
   }).setView([-6.1761924, 106.6382161],20);
+
+  function getCountryData(lat, lon) {
+      var url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=5&addressdetails=1`;
+      fetch(url)
+          .then(response => response.json())
+          .then(data => {
+              if (data && data.address && data.address.country) {
+                  console.log(data);
+              } else {
+                  console.log("No country data found for this location.");
+              }
+          })
+          .catch(err => console.error(err));
+  }
+
+  // Get initial country data
+  var center = map.getCenter();
+  getCountryData(center.lat, center.lng);
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -167,6 +209,20 @@
   L.control.zoom({
     position: 'bottomright'
   }).addTo(map);
+
+  // Tambahkan mini map
+  var miniMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  });
+
+  var miniMap = new L.Control.MiniMap(miniMapLayer, {
+      toggleDisplay: true,
+      minimized: false,
+      position: 'bottomleft'
+  }).addTo(map);
+  // Apply custom class to adjust position
+  miniMap.getContainer().classList.add('custom-minimap-position', 'custom-minimap-size');
+
 
   function searchSomething(e) {
     var keyword = document.getElementById('value_keyword').value
@@ -195,14 +251,14 @@
 
   let marker; // Menyimpan referensi ke marker yang ada
 
-function onMapClick(e) {
-  if (marker) {
-    map.removeLayer(marker); // Menghapus marker yang ada dari peta
+  function onMapClick(e) {
+    if (marker) {
+      map.removeLayer(marker); // Menghapus marker yang ada dari peta
+    }
+    marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map); // Menambahkan marker baru
+    console.log(e)
   }
-  marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map); // Menambahkan marker baru
-  console.log(e)
-}
-map.on('click', onMapClick);
+  map.on('click', onMapClick);
   </script>
 </body>
 </html>
